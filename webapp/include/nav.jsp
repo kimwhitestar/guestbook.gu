@@ -19,8 +19,9 @@
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Study</a>
         <div class="dropdown">
 			    <div class="dropdown-menu">
-			      <a class="dropdown-item" href="<%=request.getContextPath()%>/urlMapping.um">URL확장자(FrontController) 디렉토리패턴</a>
-			      <a class="dropdown-item" href="<%=request.getContextPath()%>/urlMapping.url">URL확장자(Controller) 디렉토리패턴</a>
+			      <a class="dropdown-item" href="<%=request.getContextPath()%>/adminLogin.gu">관리자인증</a>
+			      <a class="dropdown-item" href="<%=request.getContextPath()%>/urlMapping.um">확장자(FrontController) 디렉토리패턴</a>
+			      <a class="dropdown-item" href="<%=request.getContextPath()%>/urlMapping.url">확장자(Controller) 디렉토리패턴</a>
 			      <a class="dropdown-item" href="<%=request.getContextPath()%>/study1/urlMapping">URL(Controller) 디렉토리패턴</a>
 			      <a class="dropdown-item" href="#">Link 5</a>
 			      <a class="dropdown-item" href="#">Link 6</a>
