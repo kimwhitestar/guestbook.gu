@@ -44,11 +44,13 @@ public class GuestDAO {
 		}
 	}
 
-	public List<GuestVO> searchGuestList() {
+	public List<GuestVO> searchGuestList(int startIndexNo, int pageSize) {
 		List<GuestVO> vos = new ArrayList();
 		try {
-			sql = "select * from guest order by idx desc";
+			sql = "select * from guest order by idx desc limit ?, ?";
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, startIndexNo);
+			pstmt.setInt(2, pageSize);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				vo = new GuestVO();
@@ -68,5 +70,57 @@ public class GuestDAO {
 			pstmtClose();
 		}
 		return vos;
+	}
+
+	public int insert(GuestVO vo) {
+		int res = 0;
+		try {
+			sql = "insert into guest values (default, ?, ? , ?, default, ?, ?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, vo.getName());
+			pstmt.setString(2, vo.getEmail());
+			pstmt.setString(3, vo.getHomepage());
+			pstmt.setString(4, vo.getHostIp());
+			pstmt.setString(5, vo.getContent());
+			res = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("SQL 에러 : " + e.getMessage());
+		} finally {
+			pstmtClose();
+		}
+		return res;
+	}
+
+	public int delete(int idx) {
+		int res = 0;
+		try {
+			sql = "delete from guest where idx = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, idx);
+			res = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("SQL 에러 : " + e.getMessage());
+		} finally {
+			pstmtClose();
+		}
+		return res;
+	}
+
+	//페이징 총 레코드건수
+	public int totRecCnt() {
+		int totRecCnt = 0;
+		try {
+			sql = "select count(*) as totRecCnt from guest";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			rs.next(); //ResultSet레코드움직이기(count함수는 무조건 0값조차 가져옴)
+			totRecCnt = rs.getInt("totRecCnt");
+		} catch (SQLException e) {
+			e.getMessage();
+		} finally {
+			rsClose();
+			pstmtClose();
+		}
+		return totRecCnt;
 	}
 }
