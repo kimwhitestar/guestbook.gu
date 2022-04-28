@@ -24,9 +24,8 @@ public class GuestController extends HttpServlet {
 			command.execute(request, response);
 			viewPage += "/guest/guestList.jsp";
 		} 
-		else if (com.equals("")) {
-			command = null;
-			command.execute(request, response);
+		else if (com.equals("guestInput")) {
+			viewPage += "/guest/guestInput.jsp";
 		}
 		else if (com.equals("")) {
 			command = null;
