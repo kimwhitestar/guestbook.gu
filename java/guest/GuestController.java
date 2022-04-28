@@ -27,14 +27,28 @@ public class GuestController extends HttpServlet {
 		else if (com.equals("guestInput")) {
 			viewPage += "/guest/guestInput.jsp";
 		}
-		else if (com.equals("")) {
-			command = null;
+		else if (com.equals("guestInputOk")) {
+			command = new GuestInputOkCommand();
+			command.execute(request, response);
+			viewPage = "/message/message.jsp";
 		}
-		else if (com.equals("")) {
-			command = null;
+		else if (com.equals("adminLogin")) {
+			viewPage += "/guest/adminLogin.jsp";
 		}
-		else if (com.equals("")) {
-			command = null;
+		else if (com.equals("adminLoginOk")) {
+			command = new AdminLoginOkCommand();
+			command.execute(request, response);
+			viewPage = "/message/message.jsp";
+		}
+		else if (com.equals("adminLogout")) {
+			command = new AdminLogoutCommand();
+			command.execute(request, response);
+			viewPage = "/message/message.jsp";
+		}
+		else if (com.equals("guestDelete")) {
+			command = new GuestDeleteCommand();
+			command.execute(request, response);
+			viewPage = "/message/message.jsp";
 		}
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);
 		dispatcher.forward(request, response);
