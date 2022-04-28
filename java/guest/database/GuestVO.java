@@ -51,6 +51,10 @@ public class GuestVO {
 	public void setContent(String content) {
 		this.content = content;
 	}
-
 	
+	@Override
+	public String toString() {
+		return "GuestVO [idx=" + idx + ", name=" + name + ", email=" + email + ", homepage=" + homepage + ", vDate=" + vDate
+				+ ", hostIp=" + hostIp + ", content=" + content + "]";
+	}
 }
