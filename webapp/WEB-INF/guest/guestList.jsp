@@ -13,7 +13,9 @@
     <meta charset="UTF-8">
     <title>guestList.jsp</title>
     <%@ include file="/include/bs4.jsp" %>
-    <style></style>
+    <style>
+    	th {background-color: orange;}
+    </style>
     <script>
     	'use strict';
     	
@@ -24,18 +26,37 @@
     <%@ include file="/include/nav.jsp" %>
 <p><br></p>
 <div class="container">
-	<h2>방 명 록</h2>
-	<div>
-		<a href="#">글쓰기</a>
+	<h2 class="text-center">방 명 록</h2>
+	<div class="text-right m-2">
+		<a href="${ctxPath}/guestInput.gu" class="btn btn-secondary">글쓰기</a>
 	</div>
 <%	for (int i=0; i<vos.size(); i++) {
 		vo = vos.get(i);
+		
+		String vDate = vo.getvDate();
 %>
-		방문번호 : <%=vo.getIdx()%><br>
-		성명 : <%=vo.getName()%><br>
-		방문일자 : <%=vo.getvDate()%><br>
-		이메일 : <%=vo.getEmail()%><br>
-		방문소감 : <%=vo.getContent()%><br>
+		<table class="table table-borderless m-0 p-0">
+			<tr>
+				<td class="text-left">방문번호 : <%=vo.getIdx()%></td>
+				<td class="text-right">방문IP : <%=vo.getHostIp()%></td>
+			</tr>
+		</table>
+		<table class="table table-bordered">
+			<tr>
+				<th width="16%" class="text-center">성명</th>
+				<td width="34%"><%=vo.getName()%></td>
+				<th width="16%" class="text-center">방문일자</th>
+				<td width="34%"><%=vo.getvDate()%></td>
+			</tr>
+			<tr>
+				<th class="text-center">이메일</th>
+				<td colspan="3"><%=vo.getEmail()%></td>
+			</tr>
+			<tr>
+				<th class="text-center">방문소감</th>
+				<td colspan="3"><%=vo.getContent()%></td>
+			</tr>
+		</table>
 <% 	} %>
 
 </div>
