@@ -122,9 +122,9 @@
 </c:if>
  				<c:set var="isBreak" value="false"/>
 				<c:forEach var="i" begin="${(curBlock*blockSize)+1}" end="${(curBlock*blockSize)+blockSize}" step="1"> 
-					<c:if test="${i>totPage}" var="isBreak" value="true"></c:if>
+					<c:if test="${i>totPage}"><c:set var="isBreak" value="true"/></c:if>
 					<c:if test="${isBreak == false}">
-						<c:if test="${i==pageNo}">out.println("[<a href='guestList.gu?pageNo="+i+"'><font color='red'><b>"+i+"</b></font></a>]");</c:if>
+						<c:if test="${i==pageNo}">[<a href='guestList.gu?pageNo="${i}"'><font color='red'><b>${i}</b></font></a>]</c:if>
 						<c:if test="${i!=pageNo}"></c:if>
 					</c:if>
 				</c:forEach>
