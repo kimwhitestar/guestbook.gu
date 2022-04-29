@@ -120,11 +120,13 @@
 <c:if test="${curBlock > 0}">
 				[<a href='guestList.gu?pageNo=${(curBlock-1)*blockSize+1}' title='prevBlock'>이전블록</a>]
 </c:if>
-
-				<c:forEach var="i" begin="${curBlock*blockSize)+1}" end="${(curBlock*blockSize)+blockSize}" step="1"> 
-					<c:if test="${i>totPage}"> break; </c:if>
-					<c:if test="${i==pageNo}">out.println("[<a href='guestList.gu?pageNo="+i+"'><font color='red'><b>"+i+"</b></font></a>]");</c:if>
-					<c:if test="${i!=pageNo}"></c:if>
+ 				<c:set var="isBreak" value="false"/>
+				<c:forEach var="i" begin="${(curBlock*blockSize)+1}" end="${(curBlock*blockSize)+blockSize}" step="1"> 
+					<c:if test="${i>totPage}" var="isBreak" value="true"></c:if>
+					<c:if test="${isBreak == false}">
+						<c:if test="${i==pageNo}">out.println("[<a href='guestList.gu?pageNo="+i+"'><font color='red'><b>"+i+"</b></font></a>]");</c:if>
+						<c:if test="${i!=pageNo}"></c:if>
+					</c:if>
 				</c:forEach>
 				
 <c:if test="${curBlock < lastBlock}">
