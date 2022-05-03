@@ -48,16 +48,19 @@
 <div class="container">
 	<h2 class="text-center">방 명 록</h2>
 	<div class="m-2 row">
-<c:if test="${sAdmin != null && sAdmin == 'adminOk'}">
-		<div class="col text-left"><a href="${ctxPath}/adminLogout.gu" class="btn btn-secondary">관리자 로그아웃</a></div>
+		<div class="col text-left">
+<c:if test="${!empty sAdmin && sAdmin == 'adminOk'}">
+			<a href="${ctxPath}/adminLogout.gu" class="btn btn-secondary">관리자 로그아웃</a>
 </c:if>
-<c:if test="${sAdmin == null || sAdmin != 'adminOk'}">
-		<div class="col text-left"><a href="${ctxPath}/adminLogin.gu" class="btn btn-secondary">관리자</a></div>
+<!-- EL표기 empty - null, ""(공백) 모두 비교 -->
+<c:if test="${empty sAdmin || sAdmin != 'adminOk'}">
+			<a href="${ctxPath}/adminLogin.gu" class="btn btn-secondary">관리자</a>
 </c:if>
-		<div class="col text-left"><a href="${ctxPath}/guestInput.gu" class="btn btn-secondary">글쓰기</a></div>
+			<a href="${ctxPath}/guestInput.gu" class="btn btn-secondary">글쓰기</a>
+		</div>
 
 		<!-- 페이징 처리 시작 -->
-		<div class="text-right">
+		<div class="col text-right">
 <c:if test="${pageNo > 1}">
 			<a href='guestList.gu?pageNo=1' title='first'>${First}</a>
 				<a href='guestList.gu?pageNo=${pageNo - 1}' title='prev'>${Prev}</a>
@@ -74,14 +77,17 @@
 <c:forEach items="${vos}" var="vo" varStatus="idxNo">
 		<table class="table table-borderless m-0 p-0">
 			<tr>
-				<td class="text-left">방문번호 : ${curScrStartNo - (idxNo.count-1)}
-	<c:if test="${sAdmin != null && sAdmin == 'adminOk'}">
+				<td class="text-left pl-0">방문번호 : ${curScrStartNo - (idxNo.count-1)}
+	<!-- EL표기 empty - null, ""(공백) 모두 비교 -->
+	<c:if test="${!empty sAdmin && sAdmin == 'adminOk'}">
 				<%-- [<a href="${ctxPath}/guestDelete.gu?idx=<%=vo.getIdx()%>">삭제</a>] --%>
 				[<a href="javascript:delCheck('${vo.idx}');">삭제</a>]
 	</c:if>
 				</td>
-				<td class="text-right">방문IP : ${vo.hostIp}</td>
+				<td class="text-right pr-0">방문IP : ${vo.hostIp}</td>
 			</tr>
+    	</table>
+	  	<table class="table table-bordered">
 			<tr>
 				<th width="16%" class="text-center">성명</th>
 				<td width="34%">${vo.name}</td>
@@ -90,19 +96,20 @@
 			</tr>
 			<tr>
 				<th class="text-center">전자우편</th>
-	<c:if test="${vo.email eq null}">
+	<!-- EL표기 empty - null, ""(공백) 모두 비교 -->
+	<c:if test="${empty vo.email}">
 				<td colspan="3">- 없음 -</td>
 	</c:if>
-	<c:if test="${vo.email ne null}">
+	<c:if test="${!empty vo.email}">
 				<td colspan="3">${vo.email}</td>
 	</c:if>
 			</tr>
 			<tr>
 				<th class="text-center">홈페이지</th>
-	<c:if test="${vo.homepage eq null}">
+	<c:if test="${empty vo.homepage}">
 				<td colspan="3">- 없음 -</td>
 	</c:if>				
-	<c:if test="${vo.homepage ne null}">
+	<c:if test="${!empty vo.homepage}">
 				<td colspan="3"><a href='http://${vo.homepage}' target='_blank'>http://${vo.homepage}</a></td>
 	</c:if>
 			</tr>

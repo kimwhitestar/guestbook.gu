@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="guest.database.GuestVO"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="ctxPath" value="${pageContext.request.contextPath}"/>
+<!-- 회사에서는 이거 안쓰는데.. -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +12,22 @@
     <style></style>
     <script>
     	'use strict';
-    	
+    	function checkHomepage() {
+    		let homepage = document.getElementById("homepage").value;
+    		let editHomepage = homepage;
+    		if (7 <= homepage.length) {
+    			editHomepage = homepage.substring(0, homepage.indexOf(':'));
+    			if (editHomepage == 'https' || editHomepage == 'http' ) {
+    				editHomepage = homepage.substring(homepage.indexOf('://')+3);
+    				homepage = editHomepage;
+    			}
+    		}
+    		document.getElementById("homepage").value = homepage;
+    		document.getElementById("content").focus();
+    	}
+    	function checkInput() {
+    		if (confirm('등록하겠습니까?')) myForm.submit();
+    	}
     </script>
 </head>
 <body>
@@ -22,8 +39,8 @@
     <h2>방명록 글쓰기</h2>
     <div class="form-group">
       <label for="name">성명</label>
-      <input type="text" class="form-control" name="name" id="name" placeholder="이름을 입력하세요." required autofocus />
-      <div class="valid-feedback">입력성공</div>
+      <input type="text" class="form-control" name="name" id="name"  placeholder="이름을 입력하세요." required autofocus/>
+      <div class="valid-feedback"></div>
       <div class="invalid-feedback">성명은 필수 입력사항입니다.</div>
     </div>
     <div class="form-group">
@@ -33,19 +50,18 @@
     </div>
     <div class="form-group">
       <label for="homepage">Homepage</label>
-      <!-- placeholder="Homepage를 입력하세요." -->
-      <input type="text" class="form-control" name="homepage" id="homepage" value="http://" />
+      <input type="text" class="form-control" name="homepage" id="homepage" placeholder="http://는 빼고 Homepage를 입력하세요." onblur="checkHomepage()"/>
       <div class="invalid-feedback">홈페이지는 선택 입력사항입니다.</div>
     </div>
     
     <div class="form-group">
       <label for="content">방문소감</label>
-      <textarea rows="5" class="form-control" name="content" id="content" required >방문소감을 입력하세요.</textarea>
-      <div class="valid-feedback">통과~~</div>
+      <textarea rows="5" class="form-control" name="content" id="content" placeholder="방문소감을 입력하세요." required ></textarea>
+      <div class="valid-feedback"></div>
       <div class="invalid-feedback">방문소감은 필수 입력사항입니다.</div>
     </div>
     <div class="form-group">
-	    <button type="submit" class="btn btn-secondary">방명록 등록</button> &nbsp;
+	    <button type="button" class="btn btn-secondary" onclick="checkInput()">방명록 등록</button> &nbsp;
 	    <button type="reset" class="btn btn-secondary">방명록 다시작성</button> &nbsp;
 	    <button type="button" class="btn btn-secondary" onclick="location.href='${ctxPath}/guestList.gu';">돌아가기</button>
     </div>
