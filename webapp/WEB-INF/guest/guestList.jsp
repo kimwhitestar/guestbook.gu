@@ -36,8 +36,8 @@
     <script>
     	'use strict';
     	function delCheck(idx) {
-    		let ans = confirm('게시글을 삭제하겠습니까?');
-    		if (ans) location.href = '${ctxPath}/guestDelete.gu?idx='+idx;
+    		if (confirm('게시글을 삭제하겠습니까?')) 
+    			location.href = '${ctxPath}/guestDelete.gu?idx='+idx;
     	}
     </script>
 </head>
@@ -49,13 +49,6 @@
 	<h2 class="text-center">방 명 록</h2>
 	<div class="m-2 row">
 		<div class="col text-left">
-<c:if test="${!empty sAdmin && sAdmin == 'adminOk'}">
-			<a href="${ctxPath}/adminLogout.gu" class="btn btn-secondary">관리자 로그아웃</a>
-</c:if>
-<!-- EL표기 empty - null, ""(공백) 모두 비교 -->
-<c:if test="${empty sAdmin || sAdmin != 'adminOk'}">
-			<a href="${ctxPath}/adminLogin.gu" class="btn btn-secondary">관리자</a>
-</c:if>
 			<a href="${ctxPath}/guestInput.gu" class="btn btn-secondary">글쓰기</a>
 		</div>
 
