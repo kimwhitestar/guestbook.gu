@@ -39,7 +39,7 @@ public class GuestDAO {
 	}
 
 	public List<GuestVO> searchGuestList(int startIndexNo, int pageSize) {
-		List<GuestVO> vos = new ArrayList();
+		List<GuestVO> vos = new ArrayList<>();
 		try {
 			sql = "select * from guest order by idx desc limit ?, ?";
 			pstmt = conn.prepareStatement(sql);
