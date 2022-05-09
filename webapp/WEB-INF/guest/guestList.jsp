@@ -4,13 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="ctxPath" value="${pageContext.request.contextPath}"/>
 <c:set var="sAdmin" value="${sAdmin}" scope="session" />
-<c:set var="pageNo" value="${pageNo}" scope="request" />
-<c:set var="totPage" value="${totPage}" scope="request" />
-<c:set var="curScrStartNo" value="${curScrStartNo}" scope="request" />
-<c:set var="blockSize" value="${blockSize}" scope="request" />
-<c:set var="curBlock" value="${curBlock}" scope="request" />
-<c:set var="lastBlock" value="${lastBlock}" scope="request" />
-<%-- <c:set var="pageSize" value="${pageSize}" scope="request" /> --%>
 <c:set var="LF" value="\n" scope="page" />
 <c:set var="BR" value="<br>" scope="page" />
 <c:set var="First" value="<<" scope="page" />
@@ -18,12 +11,6 @@
 <c:set var="Prev" value="◁" scope="page" />
 <c:set var="Next" value="▷" scope="page" />
 
-<c:set var="vos" value="${vos}" scope="request" />
-<c:set var="no" value="${vos.size()}" scope="page" />
-<%--
-	List<GuestVO> vos = (List<GuestVO>)request.getAttribute("vos");
-	int no = vos.size();
---%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -67,10 +54,10 @@
 		<!-- 페이징 처리 끝 -->
 	</div>
 	
-<c:forEach items="${vos}" var="vo" varStatus="idxNo">
+<c:forEach items="${vos}" var="vo" >
 		<table class="table table-borderless m-0 p-0">
 			<tr>
-				<td class="text-left pl-0">방문번호 : ${curScrStartNo - (idxNo.count-1)}
+				<td class="text-left pl-0">방문번호 : ${curScrStartNo}
 	<!-- EL표기 empty - null, ""(공백) 모두 비교 -->
 	<c:if test="${!empty sAdmin && sAdmin == 'adminOk'}">
 				<%-- [<a href="${ctxPath}/guestDelete.gu?idx=<%=vo.getIdx()%>">삭제</a>] --%>
@@ -111,6 +98,7 @@
 				<td colspan='3' style='height:150px'>${vo.content.replace(LF,BR)}</td>
 			</tr>
 		</table>
+	<c:set var="curScrStartNo" value="${curScrStartNo-1}"/>
 </c:forEach>	
 		<!-- 블럭페이징 처리 시작 -->
 		<div class="text-center">
@@ -120,15 +108,15 @@
 <c:if test="${curBlock > 0}">
 				[<a href='guestList.gu?pageNo=${(curBlock-1)*blockSize+1}' title='prevBlock'>이전블록</a>]
 </c:if>
- 				<c:set var="isBreak" value="false"/>
-				<c:forEach var="i" begin="${(curBlock*blockSize)+1}" end="${(curBlock*blockSize)+blockSize}" step="1"> 
-					<c:if test="${i>totPage}"><c:set var="isBreak" value="true"/></c:if>
-					<c:if test="${isBreak == false}">
-						<c:if test="${i==pageNo}">[<a href='guestList.gu?pageNo="${i}"'><font color='red'><b>${i}</b></font></a>]</c:if>
-						<c:if test="${i!=pageNo}"></c:if>
-					</c:if>
-				</c:forEach>
-				
+<c:set var="isBreak" value="false"/>
+				<c:forEach var="i" begin="${(curBlock*blockSize)+1}" end="${(curBlock*blockSize)+blockSize}">
+			      <c:if test="${i <= totPage && i == pageNo}">
+			        [<a href="guestList.gu?pageNo=${i}"><font color='red'><b>${i}</b></font></a>]
+			      </c:if>
+			      <c:if test="${i <= totPage && i != pageNo}">
+			        [<a href="guestList.gu?pageNo=${i}">${i}</a>]
+			      </c:if>
+			    </c:forEach>
 <c:if test="${curBlock < lastBlock}">
 				[<a href='guestList.gu?pageNo=${(curBlock+1)*blockSize+1}' title='nextBlock'>다음블록</a>]
 </c:if>
