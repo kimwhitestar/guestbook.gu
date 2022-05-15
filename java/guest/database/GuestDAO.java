@@ -18,7 +18,7 @@ public class GuestDAO {
 	private String sql = new String("");
 	
 	//방명록 전체목록 페이징(총 레코드 건수) - 검색조건
-	public int totRecCnt(char kindYmd, int term, String searchConditionKey, String searchConditionValue) {
+	public int guestListTotRecCnt(char kindYmd, int term, String searchConditionKey, String searchConditionValue) {
 		int totRecCnt = 0;
 		try {
 			int prepareIdx = 0;
@@ -83,6 +83,7 @@ public class GuestDAO {
 		}
 		return sqlInterval;
 	}
+	
 	//방명록 전체목록 - 검색조건
 	//select * from guest
 	//where searchConditionKey like '%searchConditionValue%' --검색조건(작성자,글내용)
@@ -131,14 +132,14 @@ public class GuestDAO {
 		return vos;
 	}
 
-	public int searchGuestWriteCnt(String mid, String name, String nickname) {
+	//회원의 방명록에 올린 글 수
+	public int searchGuestWriteCnt(String mid, String name) {
 		int cnt = 0;
 		try {
-			sql = "select count(*) as count from guest where mid = ? or name = ? or nickName = ? ";
+			sql = "select count(idx) as count from guest where mid = ? and name = ? ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, mid);
 			pstmt.setString(2, name);
-			pstmt.setString(3, nickname);
 			rs = pstmt.executeQuery();
 			rs.next(); //count()는 데이타가 없으면 '0'값을 취득하면서 rs도 같이 리턴하므로, 레코드를 읽는 목적으로 rs.next()사용
 			cnt = rs.getInt("count"); 
