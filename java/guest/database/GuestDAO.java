@@ -17,15 +17,26 @@ public class GuestDAO {
 	private GuestVO vo = null;
 	private String sql = new String("");
 	
-	//생성자 DB연동
-	public GuestDAO() {}
-	
-	//페이징 총 레코드건수
-	public int totRecCnt() {
+	//방명록 전체목록 페이징(총 레코드 건수) - 검색조건
+	public int totRecCnt(char kindYmd, int term, String searchConditionKey, String searchConditionValue) {
 		int totRecCnt = 0;
 		try {
-			sql = "select count(*) as totRecCnt from guest";
+			int prepareIdx = 0;
+			boolean isExistSearchCondition = isExistSearchCondition(searchConditionKey, searchConditionValue);
+			boolean isExistInterval = isExistInterval(kindYmd, term);
+			sql = "select count(*) as totRecCnt from guest ";
+			if (isExistSearchCondition || isExistInterval) sql += "where "; 
+			String addPrepareSQL1 = searchConditionKey + " like ? ";
+			if (isExistSearchCondition) sql += addPrepareSQL1;
+			String addPrepareSQL2 = makeIntervalSQL(kindYmd, term, "vDate");
+			if (isExistSearchCondition && isExistInterval) {
+				sql = sql + "and " + addPrepareSQL2;
+			} else if (!isExistSearchCondition && isExistInterval) {
+				sql += addPrepareSQL2;
+			}
 			pstmt = conn.prepareStatement(sql);
+			if (isExistSearchCondition) pstmt.setString(++prepareIdx, "%"+searchConditionValue+"%");
+			if (isExistInterval) pstmt.setInt(++prepareIdx, term);
 			rs = pstmt.executeQuery();
 			rs.next(); //ResultSet레코드움직이기(count함수는 무조건 0값조차 가져옴)
 			totRecCnt = rs.getInt("totRecCnt");
@@ -38,13 +49,67 @@ public class GuestDAO {
 		return totRecCnt;
 	}
 
-	public List<GuestVO> searchGuestList(int startIndexNo, int pageSize) {
+	private boolean isExistSearchCondition(String searchConditionKey, String searchConditionValue) {
+		boolean isExistSearchCondition = false;
+		if (null != searchConditionKey && searchConditionKey.trim().length() > 0 
+			&& null != searchConditionValue && searchConditionValue.trim().length() > 0)
+			isExistSearchCondition = true;
+		return isExistSearchCondition;
+	}
+	private boolean isExistInterval(char kindYmd, int term) {
+		boolean isExistInterval = false;
+		if ((0 != kindYmd 
+			&& ('Y' == kindYmd || 'M' == kindYmd || 'D' == kindYmd)) 
+			&& 0 < term) 
+			isExistInterval = true;
+		return isExistInterval;
+	}
+	//기간별 조회 SQL 조건문 추가 - Interval ex) interval 5 day, interval 1 Month
+	private String makeIntervalSQL(char kindYmd, int term, String columnName) {
+		String sqlInterval = null;
+		if (isExistInterval(kindYmd, term)) {
+			String sqlIntervalDate = new String("interval ? ");
+			switch(kindYmd) {
+				case 'Y' : sqlIntervalDate += "year"; break;
+				case 'M' : sqlIntervalDate += "month"; break;
+				case 'W' : sqlIntervalDate += "week"; break;
+				case 'D' : sqlIntervalDate += "day"; break;
+				default : break;
+			}
+			String sqlTerm = new String("date_sub(now(), " + sqlIntervalDate + ")");
+			sqlInterval = new String(sqlTerm + " <= " + columnName + " and " + columnName +" <= now() ");
+		} else {
+			sqlInterval = new String("");
+		}
+		return sqlInterval;
+	}
+	//방명록 전체목록 - 검색조건
+	//select * from guest
+	//where searchConditionKey like '%searchConditionValue%' --검색조건(작성자,글내용)
+	//and date_sub(now(), interval term kindYmd) <= vDate and vDate <= now() --기간별조회(daily, weekly, monthly, yearly)
+	//order by idx desc limit startIndexNo, pageSize ;
+	public List<GuestVO> searchGuestList(char kindYmd, int term, String searchConditionKey, String searchConditionValue, int startIndexNo, int pageSize) {
 		List<GuestVO> vos = new ArrayList<>();
 		try {
-			sql = "select * from guest order by idx desc limit ?, ?";
+			int prepareIdx = 0;
+			boolean isExistSearchCondition = isExistSearchCondition(searchConditionKey, searchConditionValue);
+			boolean isExistInterval = isExistInterval(kindYmd, term);
+			sql = "select * from guest ";
+			if (isExistSearchCondition || isExistInterval) sql += "where "; 
+			String addPrepareSQL1 = searchConditionKey + " like ? ";
+			if (isExistSearchCondition) sql += addPrepareSQL1;
+			String addPrepareSQL2 = makeIntervalSQL(kindYmd, term, "vDate");
+			if (isExistSearchCondition && isExistInterval) {
+				sql = sql + "and " + addPrepareSQL2;
+			} else if (!isExistSearchCondition && isExistInterval) {
+				sql += addPrepareSQL2;
+			}
+			sql += "order by idx desc limit ?, ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, startIndexNo);
-			pstmt.setInt(2, pageSize);
+			if (isExistSearchCondition) pstmt.setString(++prepareIdx, "%"+searchConditionValue+"%");
+			if (isExistInterval) pstmt.setInt(++prepareIdx, term);
+			pstmt.setInt(++prepareIdx, startIndexNo);
+			pstmt.setInt(++prepareIdx, pageSize);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				vo = new GuestVO();
