@@ -133,13 +133,13 @@ public class GuestDAO {
 	}
 
 	//회원의 방명록에 올린 글 수
-	public int searchGuestWriteCnt(String mid, String name) {
+	public int searchGuestWriteCnt(String mid, String nickName) {
 		int cnt = 0;
 		try {
 			sql = "select count(idx) as count from guest where mid = ? and name = ? ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, mid);
-			pstmt.setString(2, name);
+			pstmt.setString(2, nickName);
 			rs = pstmt.executeQuery();
 			rs.next(); //count()는 데이타가 없으면 '0'값을 취득하면서 rs도 같이 리턴하므로, 레코드를 읽는 목적으로 rs.next()사용
 			cnt = rs.getInt("count"); 
@@ -155,13 +155,14 @@ public class GuestDAO {
 	public int insert(GuestVO vo) {
 		int res = 0;
 		try {
-			sql = "insert into guest values (default, ?, ? , ?, default, ?, ?)";
+			sql = "insert into guest values (default, ?, ?, ?, ?, default, ?, ?)";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, vo.getName());
-			pstmt.setString(2, vo.getEmail());
-			pstmt.setString(3, vo.getHomepage());
-			pstmt.setString(4, vo.getHostIp());
-			pstmt.setString(5, vo.getContent());
+			pstmt.setString(1, vo.getMid());
+			pstmt.setString(2, vo.getName());
+			pstmt.setString(3, vo.getEmail());
+			pstmt.setString(4, vo.getHomepage());
+			pstmt.setString(5, vo.getHostIp());
+			pstmt.setString(6, vo.getContent());
 			res = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("SQL 에러 : " + e.getMessage());
@@ -171,12 +172,14 @@ public class GuestDAO {
 		return res;
 	}
 
-	public int delete(int idx) {
+	public int delete(int idx, String mid, int level) {
 		int res = 0;
 		try {
-			sql = "delete from guest where idx = ?";
+			sql = "delete from guest where idx = ? ";
+			if (0 != level) sql = sql + "and mid = ? ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, idx);
+			if (0 != level) pstmt.setString(2, mid);
 			res = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("SQL 에러 : " + e.getMessage());

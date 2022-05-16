@@ -2,20 +2,24 @@ package guest.database;
 
 public class GuestVO {
 	private int idx;
+	private String mid;
 	private String name;
 	private String email;
 	private String homepage;
 	private String vDate;
 	private String hostIp;
 	private String content;
-	
-	public GuestVO() {}
-	
 	public int getIdx() {
 		return idx;
 	}
 	public void setIdx(int idx) {
 		this.idx = idx;
+	}
+	public String getMid() {
+		return mid;
+	}
+	public void setMid(String mid) {
+		this.mid = mid;
 	}
 	public String getName() {
 		return name;

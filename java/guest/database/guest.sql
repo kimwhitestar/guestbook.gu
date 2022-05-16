@@ -3,7 +3,7 @@ show tables;
 create table guest (
 	idx 	int not null auto_increment primary key, /*방명록 번호(pk)*/
 	mid		varchar(20),			/*회원 아이디*/
-	name 	varchar(20) not null,	/*방문자,회원 이름*/
+	name 	varchar(20) not null,	/*방문자이름,회원닉네임*/
 	email 	varchar(60),			/*방문자 이메일*/
 	homepage varchar(60),			/*방문자 홈페이지*/
 	vDate	datetime default now(), /*방문일(작성일)*/
