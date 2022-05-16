@@ -2,7 +2,6 @@
 <%@ page import="guest.database.GuestVO"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="ctxPath" value="${pageContext.request.contextPath}"/>
-<!-- 회사에서는 이거 안쓰는데.. -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,13 +12,23 @@
     <script>
     	'use strict';
     	function checkHomepage() {
-    		let homepage = document.getElementById("homepage").value;
-    		let editHomepage = homepage;
-    		if (7 <= homepage.length) {
-    			editHomepage = homepage.substring(0, homepage.indexOf(':'));
-    			if (editHomepage == 'https' || editHomepage == 'http' ) {
-    				editHomepage = homepage.substring(homepage.indexOf('://')+3);
-    				homepage = editHomepage;
+    		//Homepage 편집
+       		let homepage = document.getElementById("homepage").value;
+       		let editHomepage = homepage;
+    		if (''!=homepage.trim()) {
+    			if (-1!=homepage.indexOf(' ')) {
+    				alert('홈페이지명에 공백을 포함할 수 없습니다.');
+    				document.getElementById("homepage").focus();
+    			} 
+    			else {
+    		   		if (7 <= homepage.length) {
+    		   			editHomepage = homepage.substring(0, homepage.indexOf(':'));
+    		   			if (editHomepage == 'https' || editHomepage == 'http' ) {
+    		   				editHomepage = homepage.substring(homepage.indexOf('://')+3);
+    		   				homepage = editHomepage;
+    		   			}
+    		   		}
+    				document.getElementById("homepage").value = homepage;
     			}
     		}
     		document.getElementById("homepage").value = homepage;
@@ -39,7 +48,7 @@
     <h2>방명록 글쓰기</h2>
     <div class="form-group">
       <label for="name">성명</label>
-      <input type="text" class="form-control" name="name" id="name"  placeholder="이름을 입력하세요." required autofocus/>
+      <input type="text" class="form-control" name="name" id="name" value="${sNickName==null?'':sNickName}" placeholder="이름을 입력하세요." required autofocus/>
       <div class="valid-feedback"></div>
       <div class="invalid-feedback">성명은 필수 입력사항입니다.</div>
     </div>
